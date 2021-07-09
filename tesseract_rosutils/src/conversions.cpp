@@ -142,4 +142,28 @@ std::vector<tesseract_msgs::JointState> trajectoryFromCSVFile(const std::string&
   return trajectory;
 }
 
+trajectory_msgs::JointTrajectory convertJointTrajectory(std::vector<tesseract_common::JointState> joint_trajectory, tesseract_common::JointState initial_state){
+  trajectory_msgs::JointTrajectory result;
+  std::vector<std::string> joint_names;
+  //something with initial joint state here
+  for (unsigned long i=0; i < joint_trajectory.size(); i++){
+    trajectory_msgs::JointTrajectoryPoint current_point;
+    current_point.positions = std::vector<double> (joint_names.size(), 0);
+    current_point.velocities = std::vector<double> (joint_names.size(), 0);
+    current_point.accelerations = std::vector<double> (joint_names.size(), 0);
+    current_point.effort = std::vector<double> (joint_names.size(), 0);
+    current_point.time_from_start.sec = joint_trajectory[i].time;
+    for (unsigned long j=0; j < joint_trajectory[i].joint_names.size(); j++){
+      auto index = find(joint_names.begin(), joint_names.end(), joint_trajectory[i].joint_names[j]);
+      if (index != joint_names.end()){
+        current_point.positions[index - joint_names.begin()] = joint_trajectory[i].position[j];
+      }
+    }
+    std::cout << current_point << std::endl;
+  }
+
+}
+
+
+
 }  // namespace tesseract_rosutils

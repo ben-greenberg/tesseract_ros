@@ -77,7 +77,7 @@ bool toCSVFile(const std::vector<tesseract_msgs::JointState>& trajectory_msg,
  */
 std::vector<tesseract_msgs::JointState> trajectoryFromCSVFile(const std::string& file_path, char separator = ',');
 
-trajectory_msgs::JointTrajectory convertJointTrajectory(std::vector<tesseract_common::JointState> joint_trajectory, tesseract_common::JointState initial_state);
+trajectory_msgs::JointTrajectory toRosJointTrajectory(std::vector<tesseract_common::JointState> joint_trajectory, tesseract_common::JointState initial_state);
 
 
 }  // namespace tesseract_rosutils

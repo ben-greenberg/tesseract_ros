@@ -143,7 +143,7 @@ std::vector<tesseract_msgs::JointState> trajectoryFromCSVFile(const std::string&
   return trajectory;
 }
 
-trajectory_msgs::JointTrajectory toRosJointTrajectory(std::vector<tesseract_common::JointState> joint_trajectory, tesseract_common::JointState initial_state){
+trajectory_msgs::JointTrajectory toRosJointTrajectory(tesseract_common::JointTrajectory joint_trajectory, tesseract_common::JointState initial_state){
   trajectory_msgs::JointTrajectory result;
   std::vector<std::string> joint_names;
   joint_names = initial_state.joint_names;
@@ -165,7 +165,6 @@ trajectory_msgs::JointTrajectory toRosJointTrajectory(std::vector<tesseract_comm
         current_point.positions[joint_names_indices[joint_trajectory[i].joint_names[j]]] = joint_trajectory[i].position[j];
     }
     last_trajectory = current_point.positions;
-    std::cout << current_point << std::endl;
     points.push_back(current_point);
   }
   return result;

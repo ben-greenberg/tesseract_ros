@@ -143,6 +143,42 @@ std::vector<tesseract_msgs::JointState> trajectoryFromCSVFile(const std::string&
   return trajectory;
 }
 
+trajectory_msgs::JointTrajectory toRosJointTrajectory(const tesseract_common::JointTrajectory& joint_trajectory, const std::vector<std::string>& joint_names, const std::vector<double>& initial_values){
+  trajectory_msgs::JointTrajectory result;
+  std::map<std::string, int> joint_names_indices;
+  trajectory_msgs::JointTrajectoryPoint last_point;
+  for (int i = 0; i < joint_names.size(); i++){
+    joint_names_indices.insert({joint_names[i],i});
+  }
+  result.joint_names = joint_names;
+  last_point.positions = initial_values;
+  std::vector<trajectory_msgs::JointTrajectoryPoint> points;
+  for (unsigned long i=0; i < joint_trajectory.size(); i++){
+    trajectory_msgs::JointTrajectoryPoint current_point;
+    current_point.positions = last_point.positions;
+    current_point.velocities = std::vector<double> (joint_names.size(), 0);
+    current_point.accelerations = std::vector<double> (joint_names.size(), 0);
+    current_point.effort = std::vector<double> (joint_names.size(), 0);
+    current_point.time_from_start = ros::Duration (joint_trajectory[i].time);
+    for (unsigned long j=0; j < joint_trajectory[i].joint_names.size(); j++){
+      int joint_index = joint_names_indices[joint_trajectory[i].joint_names[j]];
+      if (joint_trajectory[i].position.size() > 0)
+        current_point.positions[joint_index] = joint_trajectory[i].position[j];
+      if (joint_trajectory[i].velocity.size() > 0)
+        current_point.velocities[joint_index] = joint_trajectory[i].velocity[j];
+      if (joint_trajectory[i].acceleration.size() > 0)
+        current_point.accelerations[joint_index] = joint_trajectory[i].acceleration[j];
+      if (joint_trajectory[i].effort.size() > j)
+        current_point.effort[joint_index] = joint_trajectory[i].effort[j];
+    }
+    last_point = current_point;
+    points.push_back(current_point);
+  }
+  result.points = points;
+  return result;
+
+}
+
 trajectory_msgs::JointTrajectory toRosJointTrajectory(const tesseract_common::JointTrajectory& joint_trajectory, const tesseract_environment::EnvState& initial_state){
   trajectory_msgs::JointTrajectory result;
   std::vector<std::string> joint_names;

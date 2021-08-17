@@ -228,7 +228,7 @@ TEST_F(TesseractROSUtilsUnit, KinematicsInformation)  // NOLINT
 TEST_F(TesseractROSUtilsUnit, toRosJointTrajectory)  // NOLINT
 {
 //  tesseract_common::JointTrajectory& joint_trajectory;
-  std::vector<std::string> joint_names = std::vector<std::string> {"joint1","joint2","joint3"};//env_->getJointNames();
+  std::vector<std::string> joint_names = std::vector<std::string> {"joint1","joint2","joint3","joint4"};//env_->getJointNames();
   std::vector<tesseract_common::JointState> tesseract_joint_trajectory;
   tesseract_common::JointState tesseract_joint_state;
 
@@ -238,28 +238,29 @@ TEST_F(TesseractROSUtilsUnit, toRosJointTrajectory)  // NOLINT
 
   tesseract_environment::EnvState env_state;
   env_state.joints[joint_names[0]] = 0;
-  env_state.joints[joint_names[1]] = 1;
-  env_state.joints[joint_names[2]] = 0;
+  env_state.joints[joint_names[1]] = 0;
+  env_state.joints[joint_names[2]] = 1;
+  env_state.joints[joint_names[3]] = 1;
 
   //point 1
-  ros_joint_state.positions = std::vector<double> {40,1,40};
-  ros_joint_state.velocities = std::vector<double> {0,0,0};
-  ros_joint_state.accelerations = std::vector<double> {0,0,0};
-  ros_joint_state.effort = std::vector<double> {0,0,0};
+  ros_joint_state.positions = std::vector<double> {40,40,2,1};
+  ros_joint_state.velocities = std::vector<double> {0,0,0,0};
+  ros_joint_state.accelerations = std::vector<double> {0,0,0,0};
+  ros_joint_state.effort = std::vector<double> {0,0,0,0};
 
-  tesseract_joint_state.joint_names = std::vector<std::string> {"joint1","joint3"};
-  tesseract_joint_state.position.resize(2);
-  tesseract_joint_state.position << 40, 40;
+  tesseract_joint_state.joint_names = std::vector<std::string> {"joint1","joint2","joint3"};
+  tesseract_joint_state.position.resize(3);
+  tesseract_joint_state.position << 40, 40, 2;
   ros_joint_trajectory.points.push_back(ros_joint_state);
   tesseract_joint_trajectory.push_back(tesseract_joint_state);
 
   //point 2
-  ros_joint_state.positions = std::vector<double> {40,10,40.1};
-  ros_joint_state.velocities = std::vector<double> {0,1,1};
-  ros_joint_state.accelerations = std::vector<double> {0,1,1};
-  ros_joint_state.effort = std::vector<double> {0,1,1};
+  ros_joint_state.positions = std::vector<double> {40,10,2,40.1};
+  ros_joint_state.velocities = std::vector<double> {0,1,0,1};
+  ros_joint_state.accelerations = std::vector<double> {0,1,0,1};
+  ros_joint_state.effort = std::vector<double> {0,1,0,1};
 
-  tesseract_joint_state.joint_names = std::vector<std::string> {"joint2","joint3"};
+  tesseract_joint_state.joint_names = std::vector<std::string> {"joint2","joint4"};
   tesseract_joint_state.position.resize(2);
   tesseract_joint_state.position << 10, 40.1;
   tesseract_joint_state.velocity.resize(2);
@@ -271,15 +272,9 @@ TEST_F(TesseractROSUtilsUnit, toRosJointTrajectory)  // NOLINT
   ros_joint_trajectory.points.push_back(ros_joint_state);
   tesseract_joint_trajectory.push_back(tesseract_joint_state);
 
-  trajectory_msgs::JointTrajectory calculated_trajectory = tesseract_rosutils::toRosJointTrajectory(tesseract_joint_trajectory, joint_names, std::vector<double> {0, 1, 0});
+  trajectory_msgs::JointTrajectory calculated_trajectory =  tesseract_rosutils::toRosJointTrajectory(tesseract_joint_trajectory, env_state);
 
   EXPECT_EQ(ros_joint_trajectory,calculated_trajectory);
-
-  calculated_trajectory = tesseract_rosutils::toRosJointTrajectory(tesseract_joint_trajectory, env_state);
-  EXPECT_EQ(calculated_trajectory.joint_names.size(),ros_joint_trajectory.joint_names.size());
-  for (int i = 0; i < calculated_trajectory.joint_names.size(); i++){
-    EXPECT_TRUE(std::find(std::begin(joint_names),std::end(joint_names),calculated_trajectory.joint_names[i]) != std::end(joint_names));
-  }
 
 }
 

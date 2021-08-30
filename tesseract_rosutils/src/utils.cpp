@@ -2164,16 +2164,20 @@ tesseract_planning::TaskInfo::Ptr fromMsg(const tesseract_msgs::TaskInfo& task_i
   return task_info;
 }
 
-trajectory_msgs::JointTrajectory toMsg(const tesseract_common::JointTrajectory& joint_trajectory, const tesseract_environment::EnvState& initial_state){
+trajectory_msgs::JointTrajectory toMsg(const tesseract_common::JointTrajectory& joint_trajectory, const tesseract_environment::EnvState& initial_state)
+{
   trajectory_msgs::JointTrajectory result;
   std::vector<std::string> joint_names;
   std::map<std::string, int> joint_names_indices;
   trajectory_msgs::JointTrajectoryPoint last_point;
-  for (unsigned long i=0; i < joint_trajectory.size(); i++){
-    for(unsigned long j=0; j < joint_trajectory[i].joint_names.size(); j++){
-      if(std::find(joint_names.begin(),joint_names.end(),joint_trajectory[i].joint_names[j]) == joint_names.end()){
-        joint_names.push_back(joint_trajectory[i].joint_names[j]);
-        joint_names_indices.insert({joint_trajectory[i].joint_names[j],joint_names.size()-1});
+  for (auto joint_state : joint_trajectory)
+  {
+    for (auto joint : joint_state.joint_names)
+    {
+      if(std::find(joint_names.begin(), joint_names.end(), joint) == joint_names.end())
+      {
+        joint_names.push_back(joint);
+        joint_names_indices.insert({joint, joint_names.size()-1});
       }
     }
   }

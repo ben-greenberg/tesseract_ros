@@ -226,8 +226,7 @@ TEST_F(TesseractROSUtilsUnit, KinematicsInformation)  // NOLINT
 
 TEST_F(TesseractROSUtilsUnit, toRosJointTrajectory)  // NOLINT
 {
-//  tesseract_common::JointTrajectory& joint_trajectory;
-  std::vector<std::string> joint_names = std::vector<std::string> {"joint1","joint2","joint3","joint4"};//env_->getJointNames();
+  std::vector<std::string> joint_names {"joint1","joint2","joint3","joint4"};
   std::vector<tesseract_common::JointState> tesseract_joint_trajectory;
   tesseract_common::JointState tesseract_joint_state;
 

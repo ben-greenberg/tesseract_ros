@@ -8,7 +8,7 @@
   <arg name="rviz" default="true"/>
   <arg name="testing" default="false"/>
   <arg name="steps" default="12"/>
-  <arg name="box_size" default="0.01"/>
+  <arg name="box_size" default="0.1"/>
   <arg name="update_start_state" default="false"/>
 
   <!-- Load universal robot description format (URDF) -->
